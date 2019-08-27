@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "329654395699",
+    "firebase_url": "https://jvf-vezzosi.firebaseio.com",
+    "project_id": "jvf-vezzosi",
+    "storage_bucket": "jvf-vezzosi.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:329654395699:android:85e6e13f0978362f",
+        "android_client_info": {
+          "package_name": "net.serendpt.vezzosi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "329654395699-jdgtlp96faglm44n6kgg0ib46pnbad37.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbzMSHT5cai-E9h2QcjJsOdwvOcb7U2AQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "329654395699-jdgtlp96faglm44n6kgg0ib46pnbad37.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
