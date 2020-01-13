@@ -3,7 +3,7 @@ Unobtrusive JavaScript
 https://github.com/rails/rails/blob/master/actionview/app/assets/javascripts
 Released under the MIT license
  */
-
+;
 
 (function() {
   var context = this;
@@ -623,14 +623,14 @@ Released under the MIT license
       };
 
       Rails.preventInsignificantClick = function(e) {
-        var data, insignificantMetaClick, link, metaClick, method, primaryMouseKey;
+        var data, insignificantMetaClick, link, metaClick, method, nonPrimaryMouseClick;
         link = this;
         method = (link.getAttribute('data-method') || 'GET').toUpperCase();
         data = link.getAttribute('data-params');
         metaClick = e.metaKey || e.ctrlKey;
         insignificantMetaClick = metaClick && method === 'GET' && !data;
-        primaryMouseKey = e.button === 0;
-        if (!primaryMouseKey || insignificantMetaClick) {
+        nonPrimaryMouseClick = (e.button != null) && e.button !== 0;
+        if (nonPrimaryMouseClick || insignificantMetaClick) {
           return e.stopImmediatePropagation();
         }
       };
@@ -2110,15 +2110,20 @@ app.config(function($routeProvider, $locationProvider, $translateProvider) {
   else $locationProvider.html5Mode(true);
 
   $routeProvider.
-    when("/posts",           { templateUrl: "partials/posts.html"}).
-    when("/showroom",        { templateUrl: "partials/showroom.html"}).
-    when("/gallery",         { templateUrl: "partials/gallery.html"}).
-    when("/video",           { templateUrl: "partials/video.html"}).
-    when("/profile",         { templateUrl: "partials/profile.html"}).
-    when("/chat",            { templateUrl: "partials/chat.html"}).
+    when("/menu",            { templateUrl: "partials/menu.html"          }).
+    when("/chi_siamo",       { templateUrl: "partials/chi_siamo.html"     }).
+    when("/conttati",        { templateUrl: "partials/conttati.html"      }).
+    when("/privacy",         { templateUrl: "partials/privacy.html"       }).
+    when("/login",           { templateUrl: "partials/login.html"         }).
+    when("/posts",           { templateUrl: "partials/posts.html"         }).
+    when("/showroom",        { templateUrl: "partials/showroom.html"      }).
+    when("/gallery",         { templateUrl: "partials/gallery.html"       }).
+    when("/video",           { templateUrl: "partials/video.html"         }).
+    when("/home",            { templateUrl: "partials/home.html"          }).
+    when("/chat",            { templateUrl: "partials/chat.html"          }).
     when("/product_detail",  { templateUrl: "partials/product_detail.html"}).
-    when("/post_detail",     { templateUrl: "partials/post_detail.html"}).
-    otherwise( { redirectTo: "/profile" });
+    when("/post_detail",     { templateUrl: "partials/post_detail.html"   }).
+    otherwise( { redirectTo: "/home" });
 })
 .filter('to_trusted', function($sce){
   return function(text){ return $sce.trustAsHtml(text); };
@@ -2129,6 +2134,12 @@ app.config(function($routeProvider, $locationProvider, $translateProvider) {
 .filter('newlines', function(){
   return function(text){ return text.replace(/\r\n/g, '<br/>'); };
 });
+
+//replaceAll sostituise tutte le occorrenze di una stringa, con un'altra stringa
+String.prototype.replaceAll = function(search, replacement) {
+  var target = this;
+  return target.split(search).join(replacement);
+};
 //$scope,e,$rootScope,$http,t,$location,$timeout,$translate,$localStorage,NgMap
 app.controller("JvfController", function($scope, $route, $rootScope, $http, $cookies, $location, $timeout, $interval, $translate, $localStorage, $location, $q) {
   var ctl = this;
@@ -2137,6 +2148,10 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
   ctl.APPVERSION = '2.1';
   ctl.is_cordova = !!window.cordova;
   app.is_cordova = !!window.cordova;
+  var HOST = "https://jvfjewelry.herokuapp.com";
+  if(document.location.href.match(/localhost/)){
+    HOST = "http://localhost:3000";
+  }
 
   ctl.apply = function(){
     setTimeout(function(){ $scope.$apply();}, 50);
@@ -2149,55 +2164,121 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
   ctl.loadView = function(){
     ctl.current_view = '';
     ctl.no_scroll = "";
+    ctl.title = "";
     ctl.currTemplate = $route.current ? $route.current.templateUrl : '';
     console.log("Carico View", ctl.currTemplate);
+    ctl.closeMenu();
     switch (ctl.currTemplate) {
+      case 'partials/login.html':
+        ctl.current_view = 'login';
+        ctl.hideNavbar();
+        break;
       case 'partials/showroom.html':
+        ctl.title = "CATALOGO";
         ctl.current_view = 'showroom';
         break;
       case 'partials/gallery.html':
+        ctl.title = "GALLERY";
         ctl.current_view = 'gallery';
         break;
       case 'partials/video.html':
         ctl.current_view = 'video';
         break;
       case 'partials/posts.html':
+        ctl.title = "POST";
         ctl.current_view = 'posts';
         break;
-      case 'partials/profile.html':
-        ctl.current_view = 'profile';
+      case 'partials/home.html':
+        ctl.current_view = 'home';
+        break;
+      case 'partials/chi_siamo.html':
+        ctl.current_view = 'chi_siamo';
+        ctl.title = "CHI SIAMO"
+        break;
+      case 'partials/conttati.html':
+        ctl.current_view = 'conttatti';
+        ctl.title = "CONTTATI"
+        break;
+      case 'partials/privacy.html':
+        ctl.current_view = 'privacy';
+        ctl.title = "PRIVACY"
         break;
       case 'partials/chat.html':
+        ctl.title = "CHAT";
         ctl.current_view = 'chat';
         ctl.no_scroll="no-scroll";
         break;
       case 'partials/product_detail.html':
         ctl.current_view = 'product_detail';
+        ctl.menu_opened=true;
+        ctl.title = "DETTAGLIO";
         ctl.hideNavbar();
         setTimeout(ctl.swipeFunction, 500);
         break;
       case 'partials/post_detail.html':
         ctl.current_view = 'post_detail';
+        ctl.menu_opened=true;
+        ctl.title = "POST";
         ctl.hideNavbar();
+        ctl.apply();
         break;
       default:
         ctl.current_view = 'posts';
         break;
     };
 
-    if (ctl.current_view != 'product_detail' && ctl.current_view != 'post_detail') ctl.showNavbar();
+    if (ctl.current_view != 'product_detail' && ctl.current_view != 'post_detail' && ctl.current_view != 'login') ctl.showNavbar();
     
     $timeout(function(){ 
+      console.log("work?")
       window.scrollTo(0,0);
       if (document.location.href.includes('chat')){
+        console.log("it tries");
         $("#chat-box").scrollTop($("#chat-box")[0].scrollHeight);
       }
-    }, 200);
+    }, 1000);
   };
 
   ctl.hideNavbar = function(){
-    $('.jvf-menu').hide();
-  }
+    setTimeout(function(){$('.bottom_menu').hide();},100);
+  };
+
+  ctl.openMenu = function(){
+    ctl.menu_opened = true;
+    ctl.hideNavbar();
+    $(".container").hide();
+    $(".menu_popup").css("display","block");
+    ctl.apply()
+  };
+  
+  ctl.closeMenu = function(){
+    ctl.menu_opened = false;
+    $(".container").show();
+    $(".menu_popup").css("display","none");
+    ctl.goback();
+    ctl.showNavbar();
+    ctl.apply()
+  };
+
+  ctl.goback = function(){
+    switch(ctl.current_view){
+      case "post_detail":
+        window.history.back();
+        break;
+      case "product_detail":
+        window.history.back();
+        break;
+      default:
+      break;
+    }
+  };
+
+  ctl.goto = function(parametro){
+    ctl.closeMenu();
+    $location.url(parametro);
+    //ctl.currTemplate = $route.current.templateUrl;
+    ctl.apply();
+  };
 
   ctl.swipeFunction = function(){
     $(".carousel").swipe({
@@ -2216,13 +2297,7 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
   }
 
   ctl.showNavbar = function(){
-    var tab_with = 100 / $('.jvf-menu li:visible').length;
-    var tab_css  = 'calc(' + tab_with + '% - 3px)';
-    $('.jvf-menu li').css({
-      'min-width': tab_css,
-      'max-width': tab_css,
-    });
-    $('.jvf-menu').show();
+    setTimeout(function(){$('.bottom_menu').show();}, 100);
   }
 
   ctl.spinnerShow = function(message){
@@ -2300,6 +2375,7 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
       $('.carousel').carousel();
       $('.carousel').bcSwipe({ threshold: 50 });
     }
+    ctl.apply();
   };
   
   ctl.closeProduct = function(){
@@ -2347,6 +2423,7 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
     if (ctl.space.info && ctl.space.info.video_aziendale && ctl.space.info.video_aziendale.length > 0 ) $('.jvf-menu .menu-video').show();
     if (ctl.space.posts && ctl.space.posts.length > 0 ) $('.jvf-menu .menu-posts').show();
     $('.jvf-menu .menu-chat').show();
+    ctl.space.info.nr_telefono_clean = ctl.space.info.nr_telefono.replaceAll("-","");
     var tab_with = 100 / $('.jvf-menu li:visible').length;
     var tab_css  = 'calc(' + tab_with + '% - 3px)';
     $('.jvf-menu li').css({
@@ -2420,15 +2497,17 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
   };
 
   ctl.openLog = function(){
-    $('#log-pop').show();
+    // $('#log-pop').show();
+    $location.path("/login");
   }
 
   ctl.closeLog = function(){
-    $('#log-pop').hide();
+    $location.path("/profile");
   };
 
   ctl.logIn = function(){
-    $http.get("https://jvfjewelry.herokuapp.com/api/login.json", 
+    var url = HOST + "/api/login.json";
+    $http.get(url, 
       {
         params:{ 
           email: encodeURIComponent(document.getElementById("email").value), 
@@ -2439,26 +2518,32 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
         if (response.data.status == true){
           ctl.logged=true;
           ctl.closeLog();
-          $('#sign-in').hide();
-          $('#signed').show();
+          $('#log-pop-ok').fadeIn();
+          $timeout(function(){ $('#log-pop-ok').fadeOut(); }, 1500);
+          // $('#sign-in').hide();
+          // $('#signed').show();
         } else {
-          alert("Utente non trovato, devi prima registrarti!");
+          $('#log-pop-err').fadeIn();
+          $timeout(function(){ $('#log-pop-err').fadeOut(); }, 1500);
+          // alert("Utente non trovato, devi prima registrarti!");
         }
       })
   }
 
   ctl.logOut = function(){
-    $('#sign-in').show();
-    $('#signed').hide();
+    // $('#sign-in').show();
+    // $('#signed').hide();
+    $('#log-pop-out').fadeIn();
     ctl.logged=false;
+    $timeout(function(){ $('#log-pop-out').fadeOut(); }, 1500);
   }
 
   ctl.send = function(){
-    var send_from = "https://jvfjewelry.herokuapp.com/api/send_message";
+    var send_from = HOST + "/api/send_message";
 
-    if (document.location.href.includes("localhost")){
+    /*if (document.location.href.includes("localhost")){
       send_from = "http://localhost:3000/api/send_message";
-    }
+    }*/
 
     var product_id;
     
@@ -2489,21 +2574,21 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
       document.getElementById("msg-input").value = "";
     };
     ctl.messageSent();
-    $timeout(function(){$("#chat-box").scrollTop($("#chat-box")[0].scrollHeight);}, 100);
+    $timeout(function(){$("#chat-box").scrollTop($("#chat-box")[0].scrollHeight);}, 115);
   };
 
   ctl.messageSent = function(){
     $('#message-sent').fadeIn();
-    $('#chat-box-container').hide();
+    $('.page-chat-container').hide();
     $timeout(function(){ $('#message-sent').fadeOut(); }, 2000);
   }
 
   ctl.getChats = function(){
-    var request_from = "https://jvfjewelry.herokuapp.com/api/chats";
+    var request_from = HOST+"/api/chats";
 
-    if (document.location.href.includes("localhost")){
+    /*if (document.location.href.includes("localhost")){
       request_from = "http://localhost:3000/api/chats";
-    }
+    }*/
 
     $http.get(request_from, { params: { device_id: ctl.uuid, page_id: ctl.space.info.id } }).
     then(
@@ -2521,7 +2606,6 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
     window.open("https://www.jewelryvirtualfair.com/en/", '_blank');
   }
 
-
   ctl.open_with = function(link){
     window.open(link, '_blank',"hideurlbar=no");
   }
@@ -2530,7 +2614,7 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
     // if (app.is_cordova) app.cordova_startup(ctl,$http,$localStorage,$translate);
 
     ctl.space_id  = $('body').data('space_id');
-    ctl.space_url = "https://jvfjewelry.herokuapp.com/api/" + ctl.space_id + "/space";
+    ctl.space_url = HOST+"/api/" + ctl.space_id + "/space";
 
     if (ctl.is_cordova) {
       window.open = cordova.InAppBrowser.open;
@@ -2574,33 +2658,52 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
     }, 500);
   };
 
+
+
   if (app.is_cordova) {
     document.addEventListener("deviceready", ctl.mainFunction);
   }
   else ctl.mainFunction();
 });
 app.config(function($translateProvider) {
-  lang = localStorage.getItem('locale') || 'en';
+  //localStorage.lang = navigator.language;
   
-  if (document.location.href.includes('localhost')){
-    lang = "it";
-  }
-  console.log("GET LOCAL => ", localStorage.getItem('locale'));
+  // ORIGINALE lang = localStorage.getItem('lang').split("-")[0] || "en";
+  locale = navigator.language
+  lang = "en"
+  if (locale != "" && locale != undefined)
+    lang = locale.split("-")[0];
+  
+  
+  // if (document.location.href.includes('localhost')){
+  //   lang = "it";
+  // }
+
+  console.log("GET LOCAL => ", localStorage.getItem('lang'));
   console.log("Lingua presa => ", lang);
+
   $translateProvider
     .preferredLanguage(lang)
     .fallbackLanguage('en')
     .useSanitizeValueStrategy(null)
     .translations('en', {
+      "products"    : "PRODUCTS"                                              ,
+      "who_we_are"  : "WHO WE ARE"                                            ,
+      "log-succ"    : "Logged in!"                                            ,
+      "log-error"   : "Error!"                                                ,
+      "log-out-ti"  : "Logged out"                                            ,
+      "log-ok"      : "Logged in successfully"                                ,
+      "log-bad"     : "Error while logging in!"                               ,
+      "log-out"     : "Successfully logged out"                               ,
       "loading"     : "Loading..."                                            ,
       "network_err" : "Network error."                                        ,
       "click_retry" : "Click here to retry"                                   ,
       "login_msg"   : "Log in to get exclusive features!"                     ,
       "register"    : "Register"                                              ,
       "post"        : "Post"                                                  ,
-      "showroom"    : "Show Room"                                             ,
+      "catalogo"    : "Show Room"                                             ,
       "gallery"     : "Gallery"                                               ,
-      "profile"     : "Profile"                                               ,
+      "home"        : "Home"                                                  ,
       "chat"        : "Chat"                                                  ,
       "video"       : "Video"                                                 ,
       "nation"      : "Nation"                                                ,
@@ -2609,35 +2712,43 @@ app.config(function($translateProvider) {
       "phone"       : "Tel"                                                   ,
       "posted"      : "Posted the "                                           ,
       "at"          : "at"                                                    ,
-      "send"        : "Send"                                                  ,
+      "send"        : "Ask"                                                   ,
       "product_des" : "Product description"                                   ,
       "product_spc" : "Product specifics"                                     ,
-      "doubt"       : "Any question on this product? Get in contact!"         ,
+      "doubt"       : "Any question on this product?"                         ,
       "message_sent": "Message sent!"                                         ,
       "f_msg_sent"  : "The message has been sent, we will soon get in touch!" ,
     })
     .translations('it',{
+      "products"    : "PRODOTTI"                                                                    ,
+      "who_we_are"  : "SCOPRI CHI SIAMO"                                                            ,
+      "log-succ"    : "Logged in!"                                                                  ,
+      "log-error"   : "Errore!"                                                                     ,
+      "log-out-ti"  : "Logged out"                                                                  ,
+      "log-ok"      : "Login effettuato con successo"                                               ,
+      "log-bad"     : "Errore durante il login! Riprova più tardi"                                  ,
+      "log-out"     : "Logout effettuato con successo"                                              ,
       "loading"     : "Caricamento..."                                                              ,
       "network_err" : "Errore di rete."                                                             ,
       "click_retry" : "Clicca qui per riprovare"                                                    ,
       "login_msg"   : "Fa il login per avere feature esclusive!"                                    ,
       "register"    : "Registrati"                                                                  ,
       "post"        : "Post"                                                                        ,
-      "showroom"    : "Show Room"                                                                   ,
+      "catalogo"    : "Catalogo"                                                                    ,
       "gallery"     : "Galleria"                                                                    ,
-      "profile"     : "Profilo"                                                                     ,
+      "home"        : "Home"                                                                        ,
       "chat"        : "Chat"                                                                        ,
       "video"       : "Video"                                                                       ,
       "nation"      : "Nazione"                                                                     ,
       "city"        : "Città"                                                                       ,
       "address"     : "Indirizzo"                                                                   ,
       "phone"       : "Tel"                                                                         ,
-      "posted"      : "Posted at"                                                                   ,
+      "posted"      : "Postato il"                                                                  ,
       "at"          : "alle"                                                                        ,
-      "send"        : "Invia"                                                                       ,
+      "send"        : "Ask"                                                                         ,
       "product_des" : "Descrizione prodotto"                                                        ,
       "product_spc" : "Specifiche prodotto"                                                         ,
-      "doubt"       : "Hai dubbi su questo prodotto o vuoi acquistarlo? Scrivici!"                  ,
+      "doubt"       : "Hai dubbi su questo prodotto o vuoi acquistarlo?"                            ,
       "message_sent": "Messaggio inviato!"                                                          ,
       "f_msg_sent"  : "Il messaggio è stato inviato, gli operatori ti risponderanno al più presto!" ,
     })
