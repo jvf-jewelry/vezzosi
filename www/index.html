@@ -11,7 +11,7 @@
     <meta name="format-detection" content="telephone=no" />
 
     <meta name="csrf-param" content="authenticity_token" />
-<meta name="csrf-token" content="3UJRcoctrdFWQXXcjGV+7BgPxEUGO7M1P8SAZ70chaHz039GicxBllm35ZXYZgp2OWN7e6+Du4g1TEBZAiDiSQ==" />
+<meta name="csrf-token" content="ZQZ1HwEuDm0YYUtX6onCAM6E78btffr2czFgZtG5ypcbr0IVPiK8vGKN8YIOJd17lt2f8ZXTFISA9xFrd319Zg==" />
     
     <link rel="stylesheet" type="text/css" href="css/index.css" />
     <script type="text/javascript" src="cordova.js"></script>
@@ -38,7 +38,7 @@
         font-size: 1.8em;
         font-weight: bold;
         color: white;
-        background: #aa165f;
+        background: #282828;
       }
       #app_spinner div.reload {
         top: calc(50vh - 50px);
@@ -54,13 +54,13 @@
     <div id="nav-header" class="header" ng-show="!ctl.menu_opened">
         <span class="header-menu" ng-click="ctl.openMenu()"><i class="material-icons">menu</i></span>
         <span class="header-title">{{ctl.title == '' ? ctl.space.title : ctl.title}}</span>
-        <span class="header-sign" id="sign-in" ng-if="!ctl.logged" ng-click="ctl.openLog()"><img src="/images/ico_account.svg" /></span>
+        <span class="header-sign" id="sign-in" ng-if="false && !ctl.logged" ng-click="ctl.openLog()"><img src="images/ico_account.svg" /></span>
     </div>
     <!-- chiudo il menu -->
     <div id="nav-header" class="header" ng-show="ctl.menu_opened">
         <span class="header-menu"></span>
         <span class="header-title">{{ctl.title}}</span>
-        <span class="header-sign" ng-click="ctl.closeMenu()"><img src="/images/ico_close_black.svg" /></span>
+        <span class="header-sign" ng-click="ctl.closeMenu()"><img src="images/ico_close_black.svg" /></span>
     </div>
 
 
@@ -78,19 +78,19 @@
       <div class="section_title"><span>SEZIONI</span></div>
       <div class="section_grid">
         <div ng-click="ctl.goto('/posts')" class="grid_item_left">
-          <span><img src="/images/ico_post.svg"/></span>     
+          <span><img src="images/ico_post.svg"/></span>     
           <span>POST</span>
         </div>
         <div ng-click="ctl.goto('/showroom')" class="grid_item_right">
-          <span><img src="/images/ico_prodotti.svg"/></span> 
+          <span><img src="images/ico_prodotti.svg"/></span> 
           <span>CATALOGO</span>
         </div>
         <div ng-click="ctl.goto('/gallery')" class="grid_item_left">
-          <span><img src="/images/ico_gallery.svg"/></span> 
+          <span><img src="images/ico_gallery.svg"/></span> 
           <span>GALLERY</span>
         </div>
         <div ng-click="ctl.goto('/chat')" class="grid_item_right">
-          <span><img src="/images/ico_chat.svg"/></span> 
+          <span><img src="images/ico_chat.svg"/></span> 
           <span>CHAT</span>
         </div>
       </div>
@@ -100,19 +100,19 @@
       <div class="section_title"><span>CATEGORIE</span></div>
       <div class="section_list">
         <div class="list_item">
-          <span>ANELLI<span>
+          <span ng-click="ctl.goto('/showroom')">ANELLI<span>
         </div>
         <div class="list_item">
-          <span>BRACCIALI<span>
+          <span ng-click="ctl.goto('/showroom')">BRACCIALI<span>
         </div>
         <div class="list_item">
-          <span>COLLANE<span>
+          <span ng-click="ctl.goto('/showroom')">COLLANE<span>
         </div>
         <div class="list_item">
-          <span>ORECCHINI<span>
+          <span ng-click="ctl.goto('/showroom')">ORECCHINI<span>
         </div>
         <div class="list_item">
-          <span>CIONDOLI<span>
+          <span ng-click="ctl.goto('/showroom')">CIONDOLI<span>
         </div>
       </div>
     </div>
@@ -298,12 +298,12 @@ If you have any questions or suggestions about our Privacy Policy, do not hesita
   <div id="showroom" class="page_80">
   <div class="filtri_grid">
     <span class="prod bottom_border " >{{ctl.space.products.length}} {{'products' | translate}}</span>
-    <span class="filtri bottom_border left_border" ><img src="/images/ico_filter.svg"/></span>
+    <span class="filtri bottom_border left_border" ><img src="images/ico_filter.svg"/></span>
   </div>
   <div class="row" style="margin-top: 15px;">
     <div class="col-md-4 col-6" ng-repeat="p in ctl.space.products">
       <div class="href_art" ng-click='ctl.showProduct(p)'>
-        <span style="position: absolute; top: 4px; right: 18px; clear: both;"><img src="/images/ico_plus.svg"/></span>
+        <span style="position: absolute; top: 4px; right: 18px; clear: both;"><img src="images/ico_plus.svg"/></span>
         <img src="https://www.jewelryvirtualfair.com/public/prod-page/{{p.photo_galleries[0].nome_foto}}"
         class="img-responsive bordered_f0 " alt="JVF" />
         <h3 style="text-align: center;">{{p.nome_prodotto}}</h3>
@@ -316,7 +316,7 @@ If you have any questions or suggestions about our Privacy Policy, do not hesita
 <script type="text/ng-template" id="partials/gallery.html">
   <div id="gallery" class="page_80">
   <div class="owl-item cloned">
-    <div class="item" ng-repeat="g in ctl.space.gallery">
+    <div class="item" style="padding-top: 20px" ng-repeat="g in ctl.space.gallery">
       <img src="https://www.jewelryvirtualfair.com/public/gallery-page/{{g.nome_foto}}"
         class="img-responsive bg-white rounded" alt="{{ctl.space.title}}" />
       <br />
@@ -344,17 +344,17 @@ If you have any questions or suggestions about our Privacy Policy, do not hesita
     <div id="banner">
       <div class="banner_container">
         <p class="claim"> {{ctl.space.info.claim_page}} </p>
-        <div class="who_are_we">
-         <p>{{ 'who_we_are' | translate}} <img src="/images/ico_arrow_white.svg"/> </p>
+        <div ng-click="ctl.goto('/chi_siamo')" class="who_are_we">
+         <p>{{ 'who_we_are' | translate}} <img src="images/ico_arrow_white.svg"/> </p>
         </div>
       </div>
       <div class="info_box">
         <div class="info_grid" >
-          <span class="right_border"><a href="tel:{{ctl.space.info.nr_telefono_clean}}"> <img src="/images/ico_tel.svg"/>CHIAMACI</a></span>
-          <span><img src="/images/ico_mail.svg"/><a href="mailto:{{ctl.space.info.email_contatto}}">SCRIVICI</a></span>
+          <span class="right_border"><a href="tel:{{ctl.space.info.nr_telefono_clean}}"> <img src="images/ico_tel.svg"/>CHIAMACI</a></span>
+          <span><img src="images/ico_mail.svg"/><a href="mailto:{{ctl.space.info.email_contatto}}">SCRIVICI</a></span>
           <div class="address top_border">
             <span class="map_img">
-              <img src="/images/ico_map.svg"/>
+              <img src="images/ico_map.svg"/>
             </span> 
             <span class="address_text">
               {{ctl.space.info.indirizzo}}, {{ctl.space.info.cap}} {{ctl.space.info.citta}} - {{ctl.space.info.provincia}} - {{ctl.space.info.state}}
@@ -363,13 +363,47 @@ If you have any questions or suggestions about our Privacy Policy, do not hesita
         </div>
       </div>
     </div>
-    <div class="recent_post_container" style="margin-top: 100px;">
-      <h2 style="margin-left: 20px;">Post recenti</h2>
-      <div class="content_post p-3 mb-5 bg-white rounded" ng-repeat="p in ctl.space.posts">
-      <img ng-click="ctl.showPost(p)" src="https://www.jewelryvirtualfair.com/public/post-image/{{p.immagine_1}}" class="img-responsive mt-3" alt="JVF">
-      <p>{{p.languages[0].des_annuncio}}</p>
+    <div class="highlight_container" style="margin-top: 100px;">
+      <h2 style="margin-left: 20px;">Prodotti in evidenza</h2>
+      <div class="row" style="width: 95%; margin: 0 auto;">
+        <div class="col-md-6 col-6" ng-repeat="product in   ctl.space.highlight_products">
+          <div class="href_art" ng-click='ctl.showProduct(product)'>
+            <span style="position: absolute; top: 4px; right: 18px; clear:  both;"><img src="images/ico_plus.svg"/></span>
+            <img src="https://www.jewelryvirtualfair.com/public/prod-page/{{product.photo_galleries[0].nome_foto}}"
+            class="img-responsive bordered_f0 " alt="JVF" />
+            <h3 style="text-align: center;">{{product.nome_prodotto}}</h3>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
+
+    <div class="recent_post_container" zstyle="margin-top: 100px;">
+      <h2 style="margin-left: 20px;">Post recenti</h2>
+      <!-- PIU DI UNA FOTO -->
+      <div ng-if="ctl.space.posts.length > 1">
+        <div id="carouselIndicators" class="carousel slide" data-ride="carousel">
+          <ol class="carousel-indicators">
+            <li data-target="#carouselIndicators" class="{{($index == 0) ? 'active' : '' }}" data-slide-to="{{$index}}" 
+                ng-repeat="p in ctl.space.recent_posts track by $index"></li>
+          </ol>
+          <div class="carousel-inner">
+            <div class="carousel-item {{($index == 0) ? 'active' : '' }}" ng-repeat="p in ctl.space.recent_posts track by $index">
+              <img id="carousel-img" class="img-size popcont" src="https://www.jewelryvirtualfair.com/public/post-image/{{p.immagine_1}}" alt="JVF">
+              <p style="text-align: center; width: 100%; position: relative; top: -50px; ">{{p.languages[0].des_annuncio}}</p>
+            </div>
+          </div>
+          <button class="carousel-control-prev" style="border:none!important; background-color: transparent!important;" onclick="$('#carouselIndicators').carousel('prev')">
+            <i class="material-icons" style="color:#282828;font-size: 45px;">keyboard_arrow_left</i>
+            <span class="sr-only">Previous</span>
+          </button>
+          <button class="carousel-control-next" style="border:none!important; background-color: transparent!important;" onclick="$('#carouselIndicators').carousel('next')">
+            <i class="material-icons" style="color:#282828;font-size: 45px;">keyboard_arrow_right</i>
+            <span class="sr-only">Next</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 </script>
@@ -527,19 +561,19 @@ If you have any questions or suggestions about our Privacy Policy, do not hesita
       <div class="section_title"><span>SEZIONI</span></div>
       <div class="section_grid">
         <div class="grid_item_left">
-          <span><img src="/images/ico_post.svg"/></span>     
+          <span><img src="images/ico_post.svg"/></span>     
           <span>POST</span>
         </div>
         <div class="grid_item_right">
-          <span><img src="/images/ico_prodotti.svg"/></span> 
+          <span><img src="images/ico_prodotti.svg"/></span> 
           <span>CATALOGO</span>
         </div>
         <div class="grid_item_left">
-          <span><img src="/images/ico_gallery.svg"/></span> 
+          <span><img src="images/ico_gallery.svg"/></span> 
           <span>GALLERY</span>
         </div>
         <div class="grid_item_right">
-          <span><img src="/images/ico_chat.svg"/></span> 
+          <span><img src="images/ico_chat.svg"/></span> 
           <span>CHAT</span>
         </div>
       </div>
@@ -614,7 +648,7 @@ If you have any questions or suggestions about our Privacy Policy, do not hesita
       <div class="bottom_grid">
         <div ng-click="ctl.goto('/home')" class="bottom_item {{(ctl.current_view == 'home') ? 'active' : ''}}">
           <span class="icon">
-            <img style="width: 25px;" src="/images/ico_home.svg"/>
+            <img style="width: 25px;" src="images/ico_home.svg"/>
           </span>
           <span class="caption">
             HOME
@@ -622,7 +656,7 @@ If you have any questions or suggestions about our Privacy Policy, do not hesita
         </div>
         <div ng-click="ctl.goto('/showroom')" class="bottom_item {{(ctl.current_view == 'showroom') ? 'active' : ''}}">
           <span class="icon">
-            <img src="/images/ico_prodotti.svg"/>
+            <img src="images/ico_prodotti.svg"/>
           </span>
           <span class="caption">
             CATALOGO
@@ -630,7 +664,7 @@ If you have any questions or suggestions about our Privacy Policy, do not hesita
         </div>
         <div ng-click="ctl.goto('/gallery')" class="bottom_item {{(ctl.current_view == 'gallery') ? 'active' : ''}}">
           <span class="icon">
-            <img src="/images/ico_gallery.svg"/>
+            <img src="images/ico_gallery.svg"/>
           </span>
           <span class="caption">
             GALLERY
@@ -638,7 +672,7 @@ If you have any questions or suggestions about our Privacy Policy, do not hesita
         </div>
         <div ng-click="ctl.goto('/posts')" class="bottom_item {{(ctl.current_view == 'posts') ? 'active' : ''}}">
           <span class="icon">
-            <img src="/images/ico_post.svg"/>
+            <img src="images/ico_post.svg"/>
           </span>
           <span class="caption">
             POST
@@ -646,7 +680,7 @@ If you have any questions or suggestions about our Privacy Policy, do not hesita
         </div>
         <div ng-click="ctl.goto('/chat')" class="bottom_item {{(ctl.current_view == 'chat') ? 'active' : ''}}">
           <span class="icon">
-            <img src="/images/ico_chat.svg"/>
+            <img src="images/ico_chat.svg"/>
           </span>
           <span class="caption">
             CHAT

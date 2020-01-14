@@ -2423,6 +2423,15 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
     if (ctl.space.info && ctl.space.info.video_aziendale && ctl.space.info.video_aziendale.length > 0 ) $('.jvf-menu .menu-video').show();
     if (ctl.space.posts && ctl.space.posts.length > 0 ) $('.jvf-menu .menu-posts').show();
     $('.jvf-menu .menu-chat').show();
+    ctl.space.recent_posts = ctl.space.posts;
+    if(ctl.space.posts.length >= 5){
+      ctl.space.recent_posts = Array.from(ctl.space.posts).splice(0,5);
+    }
+    ctl.space.highlight_products = ctl.space.products;
+    if(ctl.space.products.length >= 2){
+      ctl.space.highlight_products = Array.from(ctl.space.products).splice(0,2);
+    }
+    
     ctl.space.info.nr_telefono_clean = ctl.space.info.nr_telefono.replaceAll("-","");
     var tab_with = 100 / $('.jvf-menu li:visible').length;
     var tab_css  = 'calc(' + tab_with + '% - 3px)';
@@ -2715,7 +2724,7 @@ app.config(function($translateProvider) {
       "send"        : "Ask"                                                   ,
       "product_des" : "Product description"                                   ,
       "product_spc" : "Product specifics"                                     ,
-      "doubt"       : "Any question on this product?"                         ,
+      "doubt"       : "Have you got any question?"                         ,
       "message_sent": "Message sent!"                                         ,
       "f_msg_sent"  : "The message has been sent, we will soon get in touch!" ,
     })
@@ -2748,7 +2757,7 @@ app.config(function($translateProvider) {
       "send"        : "Ask"                                                                         ,
       "product_des" : "Descrizione prodotto"                                                        ,
       "product_spc" : "Specifiche prodotto"                                                         ,
-      "doubt"       : "Hai dubbi su questo prodotto o vuoi acquistarlo?"                            ,
+      "doubt"       : "Hai una domanda da farci?"                            ,
       "message_sent": "Messaggio inviato!"                                                          ,
       "f_msg_sent"  : "Il messaggio è stato inviato, gli operatori ti risponderanno al più presto!" ,
     })
