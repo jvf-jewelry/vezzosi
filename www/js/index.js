@@ -2212,6 +2212,7 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
         ctl.current_view = 'product_detail';
         ctl.menu_opened=true;
         ctl.title = "DETTAGLIO";
+        ctl.title = ctl.product_detail.nome_prodotto;
         ctl.hideNavbar();
         setTimeout(ctl.swipeFunction, 500);
         break;
@@ -2243,19 +2244,34 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
     setTimeout(function(){$('.bottom_menu').hide();},100);
   };
 
-  ctl.openMenu = function(){
+  ctl.openMenu = function(id){
     ctl.menu_opened = true;
     ctl.hideNavbar();
     $(".container").hide();
-    $(".menu_popup").css("display","block");
+    $("#"+id).css("display","block");
+    ctl.filter_opened = true;
     ctl.apply()
   };
   
   ctl.closeMenu = function(){
+    if(ctl.filter_opened){
+      ctl.filter_opened = false;
+      ctl.closeFilter();
+      return;
+    }
     ctl.menu_opened = false;
     $(".container").show();
-    $(".menu_popup").css("display","none");
+    $("#menu_popup").css("display","none");
     ctl.goback();
+    ctl.showNavbar();
+    ctl.apply()
+  };
+
+
+  ctl.closeFilter = function(id){
+    ctl.menu_opened = false;
+    $(".container").show();
+    $("#filter_popup").css("display","none");
     ctl.showNavbar();
     ctl.apply()
   };
@@ -2275,14 +2291,24 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
 
   ctl.goto = function(parametro){
     ctl.closeMenu();
+    if(parametro.match(/\?filter/))
+      ctl.search = parametro.split("?")[1].split("=")[1];
     $location.url(parametro);
     //ctl.currTemplate = $route.current.templateUrl;
     ctl.apply();
   };
 
-  ctl.swipeFunction = function(){
-    $(".carousel").swipe({
+  ctl.resetFilter = function(){
+    ctl.search = "";
+    ctl.closeFilter();
+  }
+
+  ctl.swipeFunction = function(id){
+    console.log(id);
+    if(id == undefined){ id =".carousel" };
+    $(id).swipe({
       swipe: function(event, direction, distance, duration, fingerCount, fingerData) {
+        console.log(event);
         if (direction == 'left') {
           console.log("sinistra");
           $(this).carousel('next');
@@ -2294,6 +2320,7 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
       },
       allowPageScroll:"vertical"
     });
+    ctl.apply();
   }
 
   ctl.showNavbar = function(){
@@ -2409,10 +2436,11 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
   }
 
   ctl.assignSpace = function(space){
+    console.log("SPACE: ",space);
     if (!space) return;
     if (space.space_id != ctl.space_id) return;
     ctl.space = space;
-    ctl.nome_agency = ctl.space_id.charAt(0).toUpperCase() + ctl.space_id.slice(1)
+    ctl.nome_agency = ctl.space.title;
     //AGGIUNGO QUALCHE MESSAGGIO A CAZZO PER VEDERE COME VIENE
     // ctl.space.chats = [{'question':'Really?', 'answer':'Of course'}, {'question':'This is a really long question, to see if it fit. Actually, it\'s not a question', 'answer':'Yes'}, {'question':'this one tests the overflow-y. Does it work? Does it not? Who knows', 'answer':'Of course not, dear.'}]
     ctl.space.chats = ctl.getChats();
@@ -2427,10 +2455,18 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
     if(ctl.space.posts.length >= 5){
       ctl.space.recent_posts = Array.from(ctl.space.posts).splice(0,5);
     }
-    ctl.space.highlight_products = ctl.space.products;
-    if(ctl.space.products.length >= 2){
-      ctl.space.highlight_products = Array.from(ctl.space.products).splice(0,2);
+   
+    ctl.space.highlight_products = []; //
+    for(var i = 1; i < ctl.space.products.length -1  ; i++ ){
+      var temp = [];
+      temp.push(ctl.space.products[i-1]);
+      temp.push(ctl.space.products[i]);
+      i+=1; // per non prendere duplicati
+      ctl.space.highlight_products.push(temp);
+      if(i==8) break;
     }
+    //ctl.space.highlight_products = Array.from(ctl.space.products).splice(0,2);
+    
     
     ctl.space.info.nr_telefono_clean = ctl.space.info.nr_telefono.replaceAll("-","");
     var tab_with = 100 / $('.jvf-menu li:visible').length;
@@ -2442,15 +2478,41 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
   };
 
   ctl.loadRemote = function(oncomplete){
-    $http.get(ctl.space_url).then(function(response){
-      ctl.assignSpace(response.data);
+    var auth = btoa("Jvf:5xMYkvAseDjc"), 
+    headers = {"Authorization": "Basic " + auth, "Access-Control-Allow-Origin": "*", "accept": "application/json"};
+    $http.get(
+      ctl.space_url,
+      {headers: headers}
+      ).then(
+      function (response) {
+        console.log("Letto", ctl.space_url, ctl.space);
+        console.log(JSON.parse(response.data));
+        ctl.assignSpace(JSON.parse(response.data));
+        if (oncomplete) oncomplete();
+      },
+      function (fail){
+        console.log("ERRORE NUOVA REMOTE: ",fail);
+        if (oncomplete) oncomplete();
+      }
+      );
+  }
+
+
+  /*ctl.loadRemote = function(oncomplete){
+    var auth = btoa("Jvf:5xMYkvAseDjc");
+    var headers = {"Authorization": "Basic " + auth};
+    $http.get(
+      ctl.space_url,
+      {headers: headers}
+      ).then(function(response){
+      ctl.assignSpace(JSON.parse(response.data));
       console.log("Letto", ctl.space_url, ctl.space);
       if (oncomplete) oncomplete();
     }, function errorCallback(response) {
       console.log("Letto", ctl.space_url, "ERR");
       if (oncomplete) oncomplete();
     });
-  }
+  }*/
 
   ctl.loadMap = function(){
     var url = "http://maps.google.com/maps"; 
@@ -2548,8 +2610,15 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
   }
 
   ctl.send = function(){
-    var send_from = HOST + "/api/send_message";
-
+    var email =  $localStorage.email;
+    if(email == undefined || email == null || email == "" ){
+      email = prompt("Inserisci la tua mail");
+      console.log(email);
+      if(email != null)
+        $localStorage.email = email;
+    }
+    //var send_from = HOST + "/api/send_message";
+    var send_from = HOST + "/api/new_message";
     /*if (document.location.href.includes("localhost")){
       send_from = "http://localhost:3000/api/send_message";
     }*/
@@ -2565,19 +2634,22 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
       if (ctl.space.chats == undefined){
         ctl.space.chats = []
       }
-      ctl.space.chats.push({'question': document.getElementById("msg-input").value});
+      //ctl.space.chats.push({'question': document.getElementById("msg-input").value});
       
-      $http.get(send_from, 
+      $http.post(send_from, 
         { 
-          params: { 
-            device_id: ctl.uuid, 
-            page_id: ctl.space.info.id, 
-            question: document.getElementById("msg-input").value.trim(),
-            product_id: product_id,
-            registration_id: ctl.registration_id
-          }
+          page_id: ctl.space.info.id, 
+          from: email,
+          to: ctl.space.space_id,
+          message: document.getElementById("msg-input").value.trim(),
+          product_id: product_id,
+          device_id: ctl.uuid, 
+          registration_id: ctl.registration_id, //alias push_id
+          push_id : ctl.registration_id
+        
         }).then(function(response){
           console.log("Saved!");
+          ctl.getChats();
         },
         function(error){ console.log(error)});
       document.getElementById("msg-input").value = "";
@@ -2593,13 +2665,20 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
   }
 
   ctl.getChats = function(){
-    var request_from = HOST+"/api/chats";
+    //var request_from = HOST+"/api/chats";
+
+    var request_from = HOST+"/api/get_messages";
+
+    var email = null;
+  
+    if($localStorage.email == undefined){
+      return;
+    }
 
     /*if (document.location.href.includes("localhost")){
       request_from = "http://localhost:3000/api/chats";
     }*/
-
-    $http.get(request_from, { params: { device_id: ctl.uuid, page_id: ctl.space.info.id } }).
+    $http.get(request_from, { params: { from: $localStorage.email, to: ctl.space.space_id, device_id: ctl.uuid, page_id: ctl.space.info.id } }).
     then(
       function(response){
         ctl.space.chats = response.data;
@@ -2621,10 +2700,15 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
 
   ctl.mainFunction = function(){
     // if (app.is_cordova) app.cordova_startup(ctl,$http,$localStorage,$translate);
-
+    var lang = navigator.language.split("-")[0];
+    if(lang == undefined || lang == null || lang == "" ){
+      lang = "en";
+    }
     ctl.space_id  = $('body').data('space_id');
     ctl.space_url = HOST+"/api/" + ctl.space_id + "/space";
 
+    ctl.space_url = "https://apigenux.jewelryvirtualfair.com/api/space/"+ ctl.space_id +"?lang="+lang+"&unicodeConvert=no&pretty=yes";
+    
     if (ctl.is_cordova) {
       window.open = cordova.InAppBrowser.open;
       // ctl.space_url = "https://jvfjewelry.herokuapp.com" + ctl.space_url;
@@ -2636,7 +2720,7 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
       if (ctl.space && ctl.space.space_id == ctl.space_id) {
         $timeout(function(){ ctl.spinnerHide(); }, 350);
         ctl.loadRemote(function(){ $localStorage.$reset(ctl.space); });
-      } else {
+      } /*else {
         $http.get("./data.json").then(function(response){
           ctl.assignSpace(response.data);
           $localStorage.$reset(ctl.space);
@@ -2644,7 +2728,7 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
         }, function errorCallback(response) {
           $('#app_spinner div.reload').show();
         });
-      }
+      }*/
     } else {
       ctl.uuid = "UUID-DI.TEST";
       ctl.loadRemote(function(){
@@ -2667,7 +2751,21 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
     }, 500);
   };
 
-
+  ctl.newapi = function(){
+    var auth = btoa("Jvf:5xMYkvAseDjc"), 
+    headers = {"Authorization": "Basic " + auth, "Access-Control-Allow-Origin": "*", "accept": "application/json"};
+    $http.get(
+      "https://apigenux.jewelryvirtualfair.com/api/space/1515?lang=it&unicodeConvert=no&pretty=yes", 
+      {headers: headers}
+      ).then(
+      function (response) {
+        console.log(JSON.parse(response.data));
+      },
+      function (fail){
+        console.log(fail);
+      }
+      );
+  }
 
   if (app.is_cordova) {
     document.addEventListener("deviceready", ctl.mainFunction);
