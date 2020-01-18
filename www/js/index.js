@@ -2249,16 +2249,12 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
     ctl.hideNavbar();
     $(".container").hide();
     $("#"+id).css("display","block");
-    ctl.filter_opened = true;
+    //ctl.filter_opened = true;
     ctl.apply()
   };
   
   ctl.closeMenu = function(){
-    if(ctl.filter_opened){
-      ctl.filter_opened = false;
-      ctl.closeFilter();
-      return;
-    }
+    ctl.closeFilter();
     ctl.menu_opened = false;
     $(".container").show();
     $("#menu_popup").css("display","none");
@@ -2717,10 +2713,10 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
       console.log(device.uuid);
       ctl.uuid = device.uuid;
       // HO GIA' CARICATO I DATI UNA VOLTA
-      if (ctl.space && ctl.space.space_id == ctl.space_id) {
+      //if (ctl.space && ctl.space.space_id == ctl.space_id) {
         $timeout(function(){ ctl.spinnerHide(); }, 350);
         ctl.loadRemote(function(){ $localStorage.$reset(ctl.space); });
-      } /*else {
+      /*} else {
         $http.get("./data.json").then(function(response){
           ctl.assignSpace(response.data);
           $localStorage.$reset(ctl.space);
