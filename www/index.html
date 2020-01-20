@@ -12,7 +12,7 @@
     <meta name="format-detection" content="telephone=yes" />
 
     <meta name="csrf-param" content="authenticity_token" />
-<meta name="csrf-token" content="sbJVdwq4gMsaRrbVFxBIOrMwNQznKMZN+qeDeunYu5fAEH8BLNwDSl36egesO44UmOiuzice/3LQEDAK8YpfKg==" />
+<meta name="csrf-token" content="N1VUBptpsJS6yD3poKbuv9wHh2znhF2yjWu0dmUzQIFtn+ZpugY08a49itpM7wFfjcTFkqjPv7uw1I5S4wIdtg==" />
     
     <link rel="stylesheet" type="text/css" href="css/index.css" />
     <script type="text/javascript" src="cordova.js"></script>
@@ -547,13 +547,12 @@ If you have any questions or suggestions about our Privacy Policy, do not hesita
         </div>
       </div>
       
-      <div class="page-chat-container">
-        <div id="chat-box-container">
-          <p class="pop-title-content" style="color:black;">{{ 'doubt' | translate }}</p>
-          <div class="input-container-detail">
-            <textarea id="msg-input" type="text" name="message" style="grid-area: text;"></textarea>
-            <button ng-click="ctl.send()" class="send-btn" style="grid-area: send;">{{'send' | translate}}</button>
-          </div>
+      <div class="input-container" style="bottom: 0;">
+        <div class="text_area">
+          <textarea id="msg-input" type="text" name="message"></textarea>
+        </div>
+        <div class="send-btn">
+          <div class="my_send_btn" ng-click="ctl.send()">INVIA</div>
         </div>
       </div>
 

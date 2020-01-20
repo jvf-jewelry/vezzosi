@@ -2651,13 +2651,17 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
       document.getElementById("msg-input").value = "";
     };
     ctl.messageSent();
-    $timeout(function(){$("#chat-box").scrollTop($("#chat-box")[0].scrollHeight);}, 115);
+    if($("#chat-box").length > 0){
+      $timeout(function(){
+        $("#chat-box").scrollTop($("#chat-box")[0].scrollHeight);
+      }, 115);
+    }
   };
 
   ctl.messageSent = function(){
     $('#message-sent').fadeIn();
     $('.page-chat-container').hide();
-    $timeout(function(){ $('#message-sent').fadeOut(); }, 2000);
+    $timeout(function(){ $('#message-sent').fadeOut();  ctl.goto("/chat") }, 2000);
   }
 
   ctl.getChats = function(){
@@ -2746,22 +2750,6 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
       $rootScope.$on('$locationChangeSuccess', ctl.loadView);
     }, 500);
   };
-
-  ctl.newapi = function(){
-    var auth = btoa("Jvf:5xMYkvAseDjc"), 
-    headers = {"Authorization": "Basic " + auth, "Access-Control-Allow-Origin": "*", "accept": "application/json"};
-    $http.get(
-      "https://apigenux.jewelryvirtualfair.com/api/space/1515?lang=it&unicodeConvert=no&pretty=yes", 
-      {headers: headers}
-      ).then(
-      function (response) {
-        console.log(JSON.parse(response.data));
-      },
-      function (fail){
-        console.log(fail);
-      }
-      );
-  }
 
   if (app.is_cordova) {
     document.addEventListener("deviceready", ctl.mainFunction);
