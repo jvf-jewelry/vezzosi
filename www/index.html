@@ -12,7 +12,7 @@
     <meta name="format-detection" content="telephone=yes" />
 
     <meta name="csrf-param" content="authenticity_token" />
-<meta name="csrf-token" content="N1VUBptpsJS6yD3poKbuv9wHh2znhF2yjWu0dmUzQIFtn+ZpugY08a49itpM7wFfjcTFkqjPv7uw1I5S4wIdtg==" />
+<meta name="csrf-token" content="ml0ozQI8zHml9UjWII68VSu9ewW5joFiak8hFsXRUabIHrG4nUE7QGbwtUdiu4JiUEIpz6cvvgSsRm+Mht8Efw==" />
     
     <link rel="stylesheet" type="text/css" href="css/index.css" />
     <script type="text/javascript" src="cordova.js"></script>
@@ -55,7 +55,7 @@
     <div id="nav-header" class="header" ng-show="!ctl.menu_opened">
         <span class="header-menu" ng-click="ctl.openMenu('menu_popup')"><img src="images/ico_menu.svg"/></span>
         <span class="header-title">{{ctl.title == '' ? ctl.space.title : ctl.title}}</span>
-        <span class="header-sign" id="sign-in" ng-if="false && !ctl.logged" ng-click="ctl.openLog()"><img src="images/ico_account.svg" /></span>
+        <span class="header-sign" id="sign-in" ng-if="!ctl.logged" ng-click="ctl.goto('/login')"><img src="images/ico_account.svg" /></span>
     </div>
     <!-- chiudo il menu -->
     <div id="nav-header" class="header" ng-show="ctl.menu_opened">
@@ -75,6 +75,15 @@
 
     <div id="menu_popup" class="menu_popup">
       <div class="menu_container">
+        <div class="menu_section">
+          <div class="section_title"><span></span></div>
+          <div class="section_list">
+            <div class="list_item" ng-click="ctl.goto('/home')">
+              <span><img style="width: 32px;" src="images/ico_home.svg"/> HOME<span>
+            </div>
+          </div>
+        </div>
+
         <div class="menu_section">
           <div class="section_title"><span>SEZIONI</span></div>
           <div class="section_grid">
@@ -173,61 +182,65 @@
       </div> 
     </div>
 
-    <div class="container {{ctl.no_scroll}}" style="min-height: 100vh; padding-bottom: 80px;">
-      <ng-view></ng-view>
+    <ng-view></ng-view>
 
 <script type="text/ng-template" id="partials/login.html">
+  <div class="container {{ctl.no_scroll}} login_container" style="min-height: 100vh; padding-bottom: 80px;"> 
   <div class="main-log-cont">
-  <!--div class="div-close"><a ng-click="ctl.closeLog()" style="margin-right: 3px;">X</a></div-->
-  <div class="intermedio">
-    <div class="log-cont">
-      <label style="font-size:19px; font-weight: bold;">{{ 'login_msg' | translate }}</label>
-      <label style="font-size:16px; font-weight: bold;">Email</label>
-      <input type="email" name="email" id="email" style="border-bottom: solid 3px #aa165f;">
-      <label style="font-size:16px; font-weight: bold;">Password</label>
-      <input type="password" name="password" id="pwd" style="border-bottom: solid 3px #aa165f;">
-    </div>
-    <div class="log-btn">
-      <button class="btn-margin btn-decor" ng-click="ctl.logIn()">Log In</button>
-      <button class="btn-margin btn-decor" ng-click="ctl.register()">{{ 'register' | translate }}</button>
+
+    <label style="font-size:19px; font-weight: bold; margin-top: 120px;">Login</label>
+    <div class="intermedio">
+      <div class="log-cont">
+        <label style="font-size:14px;">EMAIL</label>
+        <input type="email" name="email" id="email" style="line-height: 56px;">
+        <label style="font-size:14px;">PASSWORD</label>
+        <input type="password" name="password" id="pwd" style="line-height: 56px;">
+      </div>
+      <div class="log-btn">
+        <div class="btn-margin btn-decor" ng-click="ctl.logIn()">Log In</div>
+      </div>
     </div>
   </div>
 </div>
 </script>
 <script type="text/ng-template" id="partials/chi_siamo.html">
+  <div class="container {{ctl.no_scroll}}" style="min-height: 100vh; padding-bottom: 80px;"> 
   <div id="profile" class="page_80">
-  <div class="row">
-    <div class="col-sm-3 hide_sm">
-      <div class="content_img_scheda ">
+    <div class="row">
+      <div class="col-sm-3 hide_sm">
+        <div class="content_img_scheda ">
+        </div>
+      </div>
+      <div id="banner">
+        <div class="banner_container no_opacity"></div>
       </div>
     </div>
-    <div id="banner">
-      <div class="banner_container no_opacity"></div>
-    </div>
+    <h2 style="text-align: center;">
+      {{ctl.space.title}}
+    </h2>
+    <h5 class="h5_scheda j_height_des" ng-bind-html="ctl.space.info.des_page | to_trusted"></h5>
+    <br /><br />
   </div>
-  <h2 style="text-align: center;">
-    {{ctl.space.title}}
-  </h2>
-  <h5 class="h5_scheda j_height_des" ng-bind-html="ctl.space.info.des_page | to_trusted"></h5>
-  <br /><br />
 </div>
 </script>
 <script type="text/ng-template" id="partials/conttati.html">
-  <div style="padding-top: 64px; text-align: center;">
-	<h1>{{ctl.space.title}}</h1>
-	<br/>
-	<h3 style="font-size: 14px;">SEDE</h3>
-	<p>{{ctl.space.info.indirizzo}} </p> 
-	<p>{{ctl.space.info.cap}} {{ctl.space.info.citta}} - {{ctl.space.info.provincia}}
-	- {{ctl.space.info.state}}</p>
-	<p><a href="tel:{{ctl.space.info.nr_telefono_clean}}"><b>Tel.</b>  {{ctl.space.info.nr_telefono}}</a></p>
-	<!--p><b>Fax.</b>  +39 </p-->
+  <div class="container {{ctl.no_scroll}}" style="min-height: 100vh; padding-bottom: 80px;"> 
+	<div style="padding-top: 64px; text-align: center;">
+		<h1>{{ctl.space.title}}</h1>
+		<br/>
+		<h3 style="font-size: 14px;">SEDE</h3>
+		<p>{{ctl.space.info.indirizzo}} </p> 
+		<p>{{ctl.space.info.cap}} {{ctl.space.info.citta}} - {{ctl.space.info.provincia}}
+		- {{ctl.space.info.state}}</p>
+		<p><a href="tel:{{ctl.space.info.nr_telefono_clean}}"><b>Tel.</b>  {{ctl.space.info.nr_telefono}}</a></p>
+		<!--p><b>Fax.</b>  +39 </p-->
 
-	<a href="mailto:{{ctl.space.info.email_contatto}}"><p>{{ctl.space.info.email_contatto}}</p></a>
+		<a href="mailto:{{ctl.space.info.email_contatto}}"><p>{{ctl.space.info.email_contatto}}</p></a>
+	</div>
 </div>
 </script>
 <script type="text/ng-template" id="partials/privacy.html">
-  <div>
+  <div class="container {{ctl.no_scroll}}" style="min-height: 100vh; padding-bottom: 80px;"> 
 <br/>
 <p style="margin-top: 64px;">
 	Vezzosi operates the Vezzosi app, which provides the SERVICE.
@@ -310,48 +323,57 @@ If you have any questions or suggestions about our Privacy Policy, do not hesita
 </div>
 </script>
 <script type="text/ng-template" id="partials/posts.html">
-  <div id="posts" class="page_80">
-  <div class="content_post p-3 mb-5 bg-white rounded" ng-repeat="p in ctl.space.posts">
-    
-    <img ng-click="ctl.showPost(p)" src="{{p.immagine_1}}" class="img-responsive mt-3" alt="JVF">
-    <p>{{p.languages[0].des_annuncio}}</p>
-    
-    <!--div class="content_action_post">
-        <div class="action_post_icon no_cp"><i class="fa fa-heart-o"></i> 10&nbsp;Mi piace</div>
-    </div-->
-  </div>
+  <div class="container {{ctl.no_scroll}}" style="min-height: 100vh; padding-bottom: 80px;">  
+  <div id="posts">
 
+    <div class="content_post bg-white rounded" ng-repeat="p in ctl.posts">
+      
+      <img ng-click="ctl.showPost(p)" src="{{p.immagine_1}}" class="img-responsive mt-3" alt="JVF">
+      <p>{{p.languages[0].des_annuncio}}</p>
+      <span zng-click="ctl.like($event,p)" style="float: left;  line-height: 32px;"><img class="like" src="images/ico_like.svg"/> : {{p.nr_like_1}}</span>
+      <span style="margin-left: 10px;" ng-click="ctl.share_post(p)"><img class="like" src="images/ico_share.svg"/></span>
+      <span style="float: right; line-height: 32px;  color: #969696;" ng-bind="ctl.toPostDate(p.data_ora)"></span>
+      
+      <!--div class="content_action_post">
+          <div class="action_post_icon no_cp"><i class="fa fa-heart-o"></i> 10&nbsp;Mi piace</div>
+      </div-->
+    </div>
+    
+  </div>
 </div>
 </script>
 <script type="text/ng-template" id="partials/showroom.html">
+  <div class="container {{ctl.no_scroll}}" style="min-height: 100vh; padding-bottom: 80px;"> 
   <div id="showroom" class="page_80">
-  <div class="filtri_grid">
-    <span class="prod bottom_border " >{{(ctl.space.products | filter:ctl.search).length}} {{'products' | translate}}</span>
-    <span class="filtri bottom_border left_border" ng-click="ctl.openMenu('filter_popup')" ><img src="images/ico_filter.svg"/></span>
-  </div>
-  <div class="row" style="margin-top: 15px;">
-    <div class="col-md-4 col-6" ng-repeat="p in ctl.space.products | filter:ctl.search">
-      <div class="href_art" ng-click='ctl.showProduct(p)'>
-        <span style="position: absolute; top: 4px; right: 18px; clear: both;"><img src="images/ico_plus.svg"/></span>
-        <img src="{{p.photo_galleries[0].nome_foto}}"
-        class="img-responsive bordered_f0 " alt="JVF" />
-        <h3 style="text-align: center;">{{p.nome_prodotto}}</h3>
-        <!-- div class="prezzo_scat">€ 12,00</div -->
-      </div>
+    <div class="filtri_grid">
+      <span class="prod bottom_border " >{{(ctl.space.products | filter:ctl.search).length}} {{'products' | translate}}</span>
+      <span class="filtri bottom_border left_border" ng-click="ctl.openMenu('filter_popup')" ><img src="images/ico_filter.svg"/></span>
     </div>
-  </div>    
+    <div class="row" style="margin-top: 15px;">
+      <div class="col-md-4 col-6" ng-repeat="p in ctl.space.products | filter:ctl.search">
+        <div class="href_art" ng-click='ctl.showProduct(p)'>
+          <span style="position: absolute; top: 4px; right: 18px; clear: both;"><img src="images/ico_plus.svg"/></span>
+          <img src="{{p.photo_galleries[0].nome_foto}}"
+          class="img-responsive bordered_f0 " alt="JVF" />
+          <h3 style="text-align: center;">{{p.nome_prodotto}}</h3>
+          <!-- div class="prezzo_scat">€ 12,00</div -->
+        </div>
+      </div>
+    </div>    
+  </div>
 </div>
 </script>
 <script type="text/ng-template" id="partials/gallery.html">
+  <div class="container {{ctl.no_scroll}}" style="min-height: 100vh; padding-bottom: 80px;"> 
   <div id="gallery" class="page_80">
-  <div class="owl-item cloned">
-    <div class="item" style="padding-top: 20px" ng-repeat="g in ctl.space.gallery">
-      <img src="{{g.nome_foto}}"
-        class="img-responsive bg-white rounded" alt="{{ctl.space.title}}" />
-      <br />
+    <div class="owl-item cloned">
+      <div class="item" style="padding-top: 20px" ng-repeat="g in ctl.space.gallery">
+        <img src="{{g.nome_foto}}"
+          class="img-responsive bg-white rounded" alt="{{ctl.space.title}}" />
+        <br />
+      </div>
     </div>
   </div>
-
 </div>
 </script>
 <script type="text/ng-template" id="partials/video.html">
@@ -364,147 +386,157 @@ If you have any questions or suggestions about our Privacy Policy, do not hesita
 </div>
 </script>
 <script type="text/ng-template" id="partials/home.html">
+  <div class="container {{ctl.no_scroll}}" style="min-height: 100vh; padding-bottom: 80px;">  
   <div id="profile" class="page_80">
-  <div class="row">
-    <div class="col-sm-3 hide_sm">
-      <div class="content_img_scheda ">
-      </div>
-    </div>
-    <div id="banner">
-      <div class="banner_container">
-        <p class="claim"> {{ctl.space.info.claim_page}} </p>
-        <div ng-click="ctl.goto('/chi_siamo')" class="who_are_we">
-         <p>{{ 'who_we_are' | translate}} <img src="images/ico_arrow_white.svg"/> </p>
+    <div class="row">
+      <div class="col-sm-3 hide_sm">
+        <div class="content_img_scheda ">
         </div>
       </div>
-      <div class="info_box">
-        <div class="info_grid" >
-          <span class="right_border"><a href="tel:{{ctl.space.info.nr_telefono_clean}}"> <img src="images/ico_tel.svg"/>CHIAMACI</a></span>
-          <span><img src="images/ico_mail.svg"/><a href="mailto:{{ctl.space.info.email_contatto}}">SCRIVICI</a></span>
-          <div class="address top_border">
-            <span class="map_img">
-              <img src="images/ico_map.svg"/>
-            </span> 
-            <span class="address_text">
-              {{ctl.space.info.indirizzo}}, {{ctl.space.info.cap}} {{ctl.space.info.citta}} - {{ctl.space.info.provincia}} - {{ctl.space.info.state}}
-            </span>
+      <div id="banner">
+        <div class="banner_container">
+          <p class="claim"> {{ctl.space.info.claim_page}} </p>
+          <div ng-click="ctl.goto('/chi_siamo')" class="who_are_we">
+           <p>{{ 'who_we_are' | translate}} <img src="images/ico_arrow_white.svg"/> </p>
           </div>
         </div>
-      </div>
-    </div>
-
-    <div class="higlight_product_container" style="margin-top: 100px;">
-      <h2 style="margin-left: 20px;">Prodotti in evidenza</h2>
-      <!-- PIU DI UNA FOTO -->
-      <div id="carouselIndicators_product" ng-init="ctl.swipeFunction('#carouselIndicators_product')" class="carousel slide" data-ride="carousel">
-        <ol class="carousel-indicators"  style="bottom: -25px;">
-          <li data-target="#carouselIndicators_product" class="{{($index == 0) ? 'active' : '' }}" data-slide-to="{{$index}}" 
-              ng-repeat="product in ctl.space.highlight_products track by $index"></li>
-        </ol>
-        <div class="carousel-inner">
-          <div class="carousel-item {{($index == 0) ? 'active' : '' }}" ng-repeat="product in   ctl.space.highlight_products track by $index">
-            <div class="row" style="width: 95%; margin: 0 auto;">
-              <div class="col-md-6 col-6">
-                <div class="href_art" nf-if="product[0]" ng-click='ctl.showProduct(product[0])'>
-                  <span style="position: absolute; top: 4px; right: 18px; clear:  both;"><img src="images/ico_plus.svg"/></span>
-                  <img src="{{product[0].photo_galleries[0].nome_foto}}"
-                  class="img-responsive bordered_f0 " alt="JVF" />
-                  <h3 style="text-align: center;">{{product[0].nome_prodotto}}</h3>
-                </div>
-              </div>
-              <div class="col-md-6 col-6">
-                <div class="href_art" ng-if="product[1]" ng-click='ctl.showProduct(product[1])'>
-                  <span style="position: absolute; top: 4px; right: 18px; clear:  both;"><img src="images/ico_plus.svg"/></span>
-                  <img src="{{product[1].photo_galleries[0].nome_foto}}"
-                  class="img-responsive bordered_f0 " alt="JVF" />
-                  <h3 style="text-align: center;">{{product[1].nome_prodotto}}</h3>
-                </div>
-              </div>
+        <div class="info_box">
+          <div class="info_grid" >
+            <span class="right_border"><a href="tel:{{ctl.space.info.nr_telefono_clean}}"> <img src="images/ico_tel.svg"/>CHIAMACI</a></span>
+            <span><img src="images/ico_mail.svg"/><a href="mailto:{{ctl.space.info.email_contatto}}">SCRIVICI</a></span>
+            <div class="address top_border">
+              <span class="map_img">
+                <img src="images/ico_map.svg"/>
+              </span> 
+              <span class="address_text">
+                {{ctl.space.info.indirizzo}}, {{ctl.space.info.cap}} {{ctl.space.info.citta}} - {{ctl.space.info.provincia}} - {{ctl.space.info.state}}
+              </span>
             </div>
           </div>
         </div>
-        <!--button class="carousel-control-prev" style="border:none!important; background-color: transparent!important;" onclick="$('#carouselIndicators_product').carousel('prev')">
-          <i class="material-icons" style="color:#282828;font-size: 45px;">keyboard_arrow_left</i>
-          <span class="sr-only">Previous</span>
-        </button>
-        <button class="carousel-control-next" style="border:none!important; background-color: transparent!important;" onclick="$('#carouselIndicators_product').carousel('next')">
-          <i class="material-icons" style="color:#282828;font-size: 45px;">keyboard_arrow_right</i>
-          <span class="sr-only">Next</span>
-        </button-->
       </div>
-    </div>
-
-    <div class="recent_post_container" style="margin-top: 20px;">
-      <h2 style="margin-left: 20px;">Post recenti</h2>
-      <!-- PIU DI UNA FOTO -->
-      <div ng-if="ctl.space.posts.length > 1">
-        <div id="carouselIndicators_post" ng-init="ctl.swipeFunction('#carouselIndicators_post')" class="carousel slide" data-ride="carousel">
+    <div class="home_stuff_container">  
+      <div class="higlight_product_container">
+        <h2 ng-show="!ctl.product_filter">In evidenza</h2>
+        <h2 ng-show="ctl.product_filter">Altri {{ctl.product_filter}}</h2>
+        <!-- PIU DI UNA FOTO -->
+        <div id="carouselIndicators_product" ng-init="ctl.swipeFunction('#carouselIndicators_product')" class="carousel slide" data-ride="carousel">
           <ol class="carousel-indicators"  style="bottom: -25px;">
-            <li data-target="#carouselIndicators_post" class="{{($index == 0) ? 'active' : '' }}" data-slide-to="{{$index}}" 
-                ng-repeat="p in ctl.space.recent_posts track by $index"></li>
+            <li data-target="#carouselIndicators_product" class="{{($index == 0) ? 'active' : '' }}" data-slide-to="{{$index}}" 
+                ng-repeat="product in ctl.space.highlight_products track by $index"></li>
           </ol>
           <div class="carousel-inner">
-            <div class="carousel-item {{($index == 0) ? 'active' : '' }}" ng-repeat="p in ctl.space.recent_posts track by $index">
-              <!--img id="carousel-img" class="img-size popcont" src="{{p.immagine_1}}" alt="JVF"-->
-              <div class="image_container" style="background: url('{{p.immagine_1}}'); width: 100%;height: 300px;background-size: cover;"></div>
-              <p style="text-align: center; width: 100%; position: relative; ">{{p.languages[0].des_annuncio}}</p>
+            <div class="carousel-item {{($index == 0) ? 'active' : '' }}" ng-repeat="product in   ctl.space.highlight_products track by $index">
+              <div class="row" style="width: 95%; margin: 0 auto;">
+                <div class="col-md-6 col-6">
+                  <div class="href_art" nf-if="product[0]" ng-click='ctl.showProduct(product[0])'>
+                    <span style="position: absolute; top: 4px; right: 18px; clear:  both;"><img src="images/ico_plus.svg"/></span>
+                    <img src="{{product[0].photo_galleries[0].nome_foto}}"
+                    class="img-responsive bordered_f0 " alt="JVF" />
+                    <h3 style="text-align: center;">{{product[0].nome_prodotto}}</h3>
+                  </div>
+                </div>
+                <div class="col-md-6 col-6">
+                  <div class="href_art" ng-if="product[1]" ng-click='ctl.showProduct(product[1])'>
+                    <span style="position: absolute; top: 4px; right: 18px; clear:  both;"><img src="images/ico_plus.svg"/></span>
+                    <img src="{{product[1].photo_galleries[0].nome_foto}}"
+                    class="img-responsive bordered_f0 " alt="JVF" />
+                    <h3 style="text-align: center;">{{product[1].nome_prodotto}}</h3>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <!--button class="carousel-control-prev" style="border:none!important; background-color: transparent!important;" onclick="$('#carouselIndicators_post').carousel('prev')">
-            <i class="material-icons" style="color:#282828;font-size: 45px;">keyboard_arrow_left</i>
-            <span class="sr-only">Previous</span>
-          </button>
-          <button class="carousel-control-next" style="border:none!important; background-color: transparent!important;" onclick="$('#carouselIndicators_post').carousel('next')">
-            <i class="material-icons" style="color:#282828;font-size: 45px;">keyboard_arrow_right</i>
-            <span class="sr-only">Next</span>
-          </button-->
         </div>
       </div>
-    </div>
+      <!--div class="higlight_product_container" style="margin-top: 100px;">
+        <h2>In evidenza</h2>
 
+        <div id="carouselIndicators_product" ng-init="ctl.swipeFunction('#carouselIndicators_product')" class="carousel slide" data-ride="carousel">
+          <ol class="carousel-indicators"  style="bottom: -25px;">
+            <li data-target="#carouselIndicators_product" class="{{($index == 0) ? 'active' : '' }}" data-slide-to="{{$index}}" 
+                ng-repeat="product in ctl.space.highlight_products track by $index"></li>
+          </ol>
+          <div class="carousel-inner">
+            <div class="carousel-item {{($index == 0) ? 'active' : '' }}" ng-repeat="product in   ctl.space.highlight_products track by $index">
+              <div class="row" style="width: 95%; margin: 0 auto;">
+                <div class="col-md-6 col-6">
+                  <div class="href_art" nf-if="product[0]" ng-click='ctl.showProduct(product[0])'>
+                    <span style="position: absolute; top: 4px; right: 18px; clear:  both;"><img src="images/ico_plus.svg"/></span>
+                    <img src="{{product[0].photo_galleries[0].nome_foto}}"
+                    class="img-responsive bordered_f0 " alt="JVF" />
+                    <h3 style="text-align: center;">{{product[0].nome_prodotto}}</h3>
+                  </div>
+                </div>
+                <div class="col-md-6 col-6">
+                  <div class="href_art" ng-if="product[1]" ng-click='ctl.showProduct(product[1])'>
+                    <span style="position: absolute; top: 4px; right: 18px; clear:  both;"><img src="images/ico_plus.svg"/></span>
+                    <img src="{{product[1].photo_galleries[0].nome_foto}}"
+                    class="img-responsive bordered_f0 " alt="JVF" />
+                    <h3 style="text-align: center;">{{product[1].nome_prodotto}}</h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div-->
+
+      <div class="recent_post_container">
+        <h2>Post recenti</h2>
+        <div class="content_post bg-white rounded" ng-repeat="p in ctl.posts">
+      
+      <img ng-click="ctl.showPost(p)" src="{{p.immagine_1}}" class="img-responsive mt-3" alt="JVF">
+      <p>{{p.languages[0].des_annuncio}}</p>
+      <span zng-click="ctl.like($event,p)" style="float: left;  line-height: 32px;"><img class="like" src="images/ico_like.svg"/> : {{p.nr_like_1}}</span>
+      <span style="margin-left: 10px;" ng-click="ctl.share_post(p)"><img class="like" src="images/ico_share.svg"/></span>
+      <span style="float: right; line-height: 32px;  color: #969696;" ng-bind="ctl.toPostDate(p.data_ora)"></span>
+      
+      <!--div class="content_action_post">
+          <div class="action_post_icon no_cp"><i class="fa fa-heart-o"></i> 10&nbsp;Mi piace</div>
+      </div-->
+    </div>
+        <!--div class="content_post bg-white rounded" ng-repeat="p in ctl.space.recent_posts">
+      
+          <img ng-click="ctl.showPost(p)" src="{{p.immagine_1}}" class="img-responsive mt-3" alt="JVF">
+          <p>{{p.languages[0].des_annuncio}}</p>
+          <span ng-click="ctl.like($event,p)" style="float: left;  line-height: 32px;"><img class="like" src="images/ico_like.svg"/> : {{p.nr_like_1}}</span>
+          <span style="font-size: 12px; float: right; line-height: 32px; color: #969696;" ng-bind="ctl.toPostDate(p.data_ora)"></span>
+          
+        </div>
+      </div-->
+    </div> <!--home stuf container -->
+
+    </div>
   </div>
 </div>
 </script>
 <script type="text/ng-template" id="partials/chat.html">
+  <div class="container {{ctl.no_scroll}}" style="min-height: 100vh; padding-bottom: 80px;">    
   <div id="chat" class="page_80" style="overflow-y: none;">
-  <div id="chat-box" class="chat-box" style="overflow-y: auto;padding-bottom: 50px;">
-    <div ng-repeat="elem in ctl.space.chats.messages">
-        <div ng-if="elem.message" class="{{ ctl.space.space_id == elem.to ?  'chat_anwser' : 'chat_question'}}">
-        <span ng-bind-html="elem.message | newlines | to_trusted "></span>
-        <div class="orario" style="text-align: right;">{{elem.display_time}}</div>
+    <div id="chat-box" class="chat-box" style="overflow-y: auto;padding-bottom: 50px;">
+      <div ng-repeat="elem in ctl.space.chats.messages">
+          <div ng-if="elem.message" class="{{ ctl.space.space_id == elem.to ?  'chat_anwser' : 'chat_question'}}">
+          <span ng-bind-html="elem.message | newlines | to_trusted "></span>
+          <div class="orario" style="text-align: right;">{{elem.display_time}}</div>
+        </div>
       </div>
-    </div>
-  </div> 
+    </div> 
 
-  <div class="input-container">
-    <div class="text_area">
-      <textarea id="msg-input" type="text" name="message"></textarea>
-    </div>
-    <div class="send-btn">
-      <div class="my_send_btn" ng-click="ctl.send()">INVIA</div>
+    <div class="input-container">
+      <div class="text_area">
+        <textarea id="msg-input" ng-model="ctl.msg_input" name="message"></textarea>
+      </div>
+      <div class="send-btn">
+        <div class="my_send_btn" ng-click="ctl.send()">INVIA</div>
+      </div>
     </div>
   </div>
 </div>
-
-<script type="text/javascript">
-  var textarea = document.getElementById("msg-input");
-
-  textarea.addEventListener('keydown', autosize);
-               
-  function autosize(){
-    var el = this;
-    var max_height = $('#chat')[0].style.height - $("#chat-box")[0].style.height;
-    setTimeout(function(){
-      el.style.cssText = 'height:auto; padding:0, max-height:' + max_height + ';';
-      el.style.cssText = 'height:' + el.scrollHeight + 'px; max-height: 50px;';
-    },0);
-    $("#chat-box").scrollTop($("#chat-box")[0].scrollHeight);
-  }
-</script>
 </script>
 <script type="text/ng-template" id="partials/product_detail.html">
-  <div id="imgpop" style="padding-top: 90px;">
-  <div>
+  
+<div id="imgpop" class="container" style="padding-top: 90px;">
     <!-- SOLO UNA FOTO -->
     <div class="popcont img-size" ng-if="ctl.product_detail.photo_galleries.length == 1">
       <img class="img-size popcont" src="{{ctl.product_detail.photo_galleries[0].nome_foto}}" clrass="d-block w-100" alt="JVF">
@@ -521,180 +553,115 @@ If you have any questions or suggestions about our Privacy Policy, do not hesita
             <img id="carousel-img" class="img-size popcont" ng-if="ctl.current_view == 'product_detail'" src="{{foto.nome_foto}}" clrass="d-block w-100" alt="JVF">
           </div>
         </div>
-        <!--button class="carousel-control-prev" style="border:none!important; background-color: transparent!important;" onclick="$('#carouselIndicators').carousel('prev')">
-          <i class="material-icons" style="color:#282828;font-size: 45px;">keyboard_arrow_left</i>
-          <span class="sr-only">Previous</span>
-        </button>
-        <button class="carousel-control-next" style="border:none!important; background-color: transparent!important;" onclick="$('#carouselIndicators').carousel('next')">
-          <i class="material-icons" style="color:#282828;font-size: 45px;">keyboard_arrow_right</i>
-          <span class="sr-only">Next</span>
-        </button-->
+      </div>
+    </div>
+    <!-- inizio parte descrizione oggetto -->
+    <div class="jewel_description" style="margin-top: 50px;">
+      <div class="product_name">{{ctl.product_detail.nome_prodotto}}</div>
+      <div class="product_description">{{ctl.product_detail.des_estesa}}</div>
+      <div class="carat_weight">
+        <span ng-if="ctl.product_detail['Caratura Pietre']" class="carat"><b>Caratura Pietre:</b> {{ctl.product_detail['Caratura Pietre']}} {{ctl.product_detail['Gemme e Perle']}}</span>
+        <span class="void"></span>
+        <span ng-if="ctl.product_detail['Peso g']" class="weight"><b>Peso g:</b> {{ctl.product_detail["Peso g"]}} </span>
+      </div>
+      <div ng-if="ctl.product_detail.prezzo || ctl.product_detail.prezzo_ingrosso" class="product_price product_row"> € {{ctl.product_detail.prezzo || ctl.product_detail.prezzo_ingrosso }}</div>
+      <div ng-if="ctl.product_detail.specifiche_text" class="product_specs product_row">
+        <div class="label">SPECIFICHE PRODOTTO</div>
+        <div class="text">{{ctl.product_detail.specifiche_text}}</div>
+      </div>
+      <div class="product_sell_condition product_row">
+        <div class="label">CONDIZIONE DI VENDITA</div>
+        <div class="text">{{ctl.product_detail.condizioni_vendita}}</div>
+      </div>
+    </div>
+    <!-- fine descrizione oggetto -->
+    <!-- inizio bottoni -->
+    <div class="button_container" style="margin-top: 20px;">
+      <div class="btn btn-dark ask_info" ng-click="ctl.goToChat(ctl.product_detail.id)">RICHIEDI INFORMAZIONI</div>
+      <div class="btn btn-light share" ng-click="ctl.share_product(ctl.product_detail)" style="margin-top: 20px;">
+        <span><img style="width: 25px;" src="images/ico_share.svg"/></span>
+        <span> CONDIVIDI </span>
+      </div>
+    </div>
+    <!-- fine bottoni -->
+    <div class="more_jewels" style="margin-top: 20px;">
+      <div class="higlight_product_container">
+        <h2 ng-show="!ctl.product_filter">In evidenza</h2>
+        <h2 ng-show="ctl.product_filter">Altri {{ctl.product_filter}}</h2>
+        <!-- PIU DI UNA FOTO -->
+        <div id="carouselIndicators_product" ng-init="ctl.swipeFunction('#carouselIndicators_product')" class="carousel slide" data-ride="carousel">
+          <ol class="carousel-indicators"  style="bottom: -25px;">
+            <li data-target="#carouselIndicators_product" class="{{($index == 0) ? 'active' : '' }}" data-slide-to="{{$index}}" 
+                ng-repeat="product in ctl.space.highlight_products track by $index"></li>
+          </ol>
+          <div class="carousel-inner">
+            <div class="carousel-item {{($index == 0) ? 'active' : '' }}" ng-repeat="product in   ctl.space.highlight_products track by $index">
+              <div class="row" style="width: 95%; margin: 0 auto;">
+                <div class="col-md-6 col-6">
+                  <div class="href_art" nf-if="product[0]" ng-click='ctl.showProduct(product[0])'>
+                    <span style="position: absolute; top: 4px; right: 18px; clear:  both;"><img src="images/ico_plus.svg"/></span>
+                    <img src="{{product[0].photo_galleries[0].nome_foto}}"
+                    class="img-responsive bordered_f0 " alt="JVF" />
+                    <h3 style="text-align: center;">{{product[0].nome_prodotto}}</h3>
+                  </div>
+                </div>
+                <div class="col-md-6 col-6">
+                  <div class="href_art" ng-if="product[1]" ng-click='ctl.showProduct(product[1])'>
+                    <span style="position: absolute; top: 4px; right: 18px; clear:  both;"><img src="images/ico_plus.svg"/></span>
+                    <img src="{{product[1].photo_galleries[0].nome_foto}}"
+                    class="img-responsive bordered_f0 " alt="JVF" />
+                    <h3 style="text-align: center;">{{product[1].nome_prodotto}}</h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div style="margin: 0 auto;">
-      <div style="margin:50px;">
-        <div style="display: grid; grid-template-columns: auto auto;" ng-if="ctl.product_detail.des_estesa != '' && ctl.product_detail.des_estesa != null">
-          <!--p class="pop-title-desc"><b>{{ 'product_des' | translate }}</b></p-->
-          <b style="color: #282828;">Descrizione:</b> <p id="desc-content" style="padding-left: 5px;" class="pop-text-content" >{{ctl.product_detail.des_estesa}}</p>
-          <b style="color: #282828;">Nazione:</b> <p style="padding-left: 5px;" class="pop-text-content"> {{ctl.space.info.state}}</p>
-          <b style="color: #282828;">Peso: </b>   <p style="padding-left: 5px;" class="pop-text-content"> {{(ctl.product_detail["Peso g"]) ? ctl.product_detail["Peso g"] : 'Not Specified'}}</p>
-          <b style="color: #282828;">Prezzo: </b> <p style="padding-left: 5px;" class="pop-text-content"> {{(ctl.product_detail["prezzo"]) ? ctl.product_detail["prezzo"] : 'Not Specified'}}</p>
-        </div>
-        <div ng-if="ctl.product_detail.specifiche_text != '' && ctl.product_detail.specifiche_text != null">
-          <p class="pop-title-desc"><b>{{ 'product_spc' | translate }}</b></p>
-          <p id="desc-content" class="pop-text-content">{{ctl.product_detail.specifiche_text}}</p>
-        </div>
-      </div>
-      
-      <div class="input-container" style="bottom: 0;">
-        <div class="text_area">
-          <textarea id="msg-input" type="text" name="message"></textarea>
-        </div>
-        <div class="send-btn">
-          <div class="my_send_btn" ng-click="ctl.send()">INVIA</div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-
-  <div id="message-sent">
-    <h3><b>{{ 'message_sent' | translate }}</b></h3>
-    <p>{{ 'f_msg_sent' | translate }}</p>
-  </div>
 </div>
-
-<script type="text/javascript">
-  var textarea = document.getElementById("msg-input");
-
-  textarea.addEventListener('keydown', autosize);
-               
-  function autosize(){
-    var el = this;
-    setTimeout(function(){
-      el.style.cssText = 'height:auto; padding:0; max-height: 180px!important;';
-      el.style.cssText = 'height:' + el.scrollHeight + 'px; max-height: 180px!important;';
-    },0);
-    $(".page-chat-container")[0].style.cssText = 'max-height:40%;';
-    $("#chat-box-container")[0].style.cssText = 'max-height:40%;';
-  }
-</script>
 </script>
 <script type="text/ng-template" id="partials/post_detail.html">
+  <div class="container {{ctl.no_scroll}}" style="min-height: 100vh; padding-bottom: 80px;"> 
   <div id="postpop" class="page_100">
-  <div>
-    <!-- SOLO UNA FOTO -->
-    <div class="popcont img-size" ng-if="ctl.post_pics.length == 1">
-      <img class="img-size popcont d-block w-100" src="{{ctl.post_pics[0]}}" alt="JVF">
-    </div>
-    <!-- PIU DI UNA FOTO -->
-    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" ng-if="ctl.post_pics.length > 1">
-      <ol class="carousel-indicators">
-        <li data-target="#carouselExampleIndicators" class="{{($index == 0) ? 'active' : '' }}" data-slide-to="{{$index}}" 
-              ng-repeat="foto in ctl.post_pics track by $index"></li>
-      </ol>
-      <div class="carousel-inner">
-        <div class="carousel-item {{($index == 0) ? 'active' : '' }}" ng-repeat="foto in ctl.post_pics track by $index">
-          <img class="img-size popcont" src="{{foto}}" clrass="d-block w-100" alt="JVF">
-        </div>
+    <div>
+      <!-- SOLO UNA FOTO -->
+      <div class="popcont img-size" ng-if="ctl.post_pics.length == 1">
+        <img class="img-size popcont d-block w-100" src="{{ctl.post_pics[0]}}" alt="JVF">
       </div>
-      <button class="carousel-control-prev" style="border:none!important; background-color: transparent!important;" onclick="$('#carouselExampleIndicators').carousel('prev')">
-          <i class="material-icons" style="color:#282828;font-size: 45px;">keyboard_arrow_left</i>
-          <span class="sr-only">Previous</span>
-        </button>
-        <button class="carousel-control-next" style="border:none!important; background-color: transparent!important;" onclick="$('#carouselExampleIndicators').carousel('next')">
-          <i class="material-icons" style="color:#282828;font-size: 45px;">keyboard_arrow_right</i>
-          <span class="sr-only">Next</span>
-        </button>
-    </div>
+      <!-- PIU DI UNA FOTO -->
+      <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" ng-if="ctl.post_pics.length > 1">
+        <ol class="carousel-indicators">
+          <li data-target="#carouselExampleIndicators" class="{{($index == 0) ? 'active' : '' }}" data-slide-to="{{$index}}" 
+                ng-repeat="foto in ctl.post_pics track by $index"></li>
+        </ol>
+        <div class="carousel-inner">
+          <div class="carousel-item {{($index == 0) ? 'active' : '' }}" ng-repeat="foto in ctl.post_pics track by $index">
+            <img class="img-size popcont" src="{{foto}}" clrass="d-block w-100" alt="JVF">
+          </div>
+        </div>
+        <button class="carousel-control-prev" style="border:none!important; background-color: transparent!important;" onclick="$('#carouselExampleIndicators').carousel('prev')">
+            <i class="material-icons" style="color:#282828;font-size: 45px;">keyboard_arrow_left</i>
+            <span class="sr-only">Previous</span>
+          </button>
+          <button class="carousel-control-next" style="border:none!important; background-color: transparent!important;" onclick="$('#carouselExampleIndicators').carousel('next')">
+            <i class="material-icons" style="color:#282828;font-size: 45px;">keyboard_arrow_right</i>
+            <span class="sr-only">Next</span>
+          </button>
+      </div>
 
-    <div style="margin: 0 auto; max-width: 80%;">
-      <div style="margin:10px;">
-        <div ng-if="ctl.post_detail.languages[0].des_annuncio != '' && ctl.post_detail.languages[0].des_annuncio != null">
-          <p id="desc-content" class="pop-text-content">{{ctl.post_detail.languages[0].des_annuncio}}</p>
+      <div style="margin: 0 auto; max-width: 80%;">
+        <div style="margin:10px;">
+          <div ng-if="ctl.post_detail.languages[0].des_annuncio != '' && ctl.post_detail.languages[0].des_annuncio != null">
+            <p id="desc-content" class="pop-text-content">{{ctl.post_detail.languages[0].des_annuncio}}</p>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
 </script>
-<script type="text/ng-template" id="partials/menu.html">
-  <div id="menu_popup" class="menu_popup">
-  
-  <div class="menu_container">
-    <div class="menu_section">
-      <div class="section_title"><span>SEZIONI</span></div>
-      <div class="section_grid">
-        <div class="grid_item_left">
-          <span><img src="images/ico_post.svg"/></span>     
-          <span>POST</span>
-        </div>
-        <div class="grid_item_right">
-          <span><img src="images/ico_prodotti.svg"/></span> 
-          <span>CATALOGO</span>
-        </div>
-        <div class="grid_item_left">
-          <span><img src="images/ico_gallery.svg"/></span> 
-          <span>GALLERY</span>
-        </div>
-        <div class="grid_item_right">
-          <span><img src="images/ico_chat.svg"/></span> 
-          <span>CHAT</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="menu_section">
-      <div class="section_title"><span>CATEGORIE</span></div>
-      <div class="section_list">
-        <div class="list_item">
-          <span>ANELLI<span>
-        </div>
-        <div class="list_item">
-          <span>BRACCIALI<span>
-        </div>
-        <div class="list_item">
-          <span>COLLANE<span>
-        </div>
-        <div class="list_item">
-          <span>ORECCHINI<span>
-        </div>
-        <div class="list_item">
-          <span>CIONDOLI<span>
-        </div>
-      </div>
-    </div>
-
-    <div class="menu_section">
-      <div class="section_title"><span>ALTRO</span></div>
-      <div class="section_list">
-        <div class="list_item">
-          <span>CHI SIAMO<span>
-        </div>
-        <div class="list_item">
-          <span>CONTATTI<span>
-        </div>
-        <div class="list_item">
-         <span>INFORMATIVA SULLA PRIVACY<span>
-        </div>
-      </div>
-    </div>
-    <div class="menu_section">
-      <div class="section_title"><span>FOLLOW US</span></div>
-      <div class="section_list">
-        <div class="list_item">
-          <span>F<span>
-          <span>IG<span>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-</div>
-</script>
-    </div>
 
     <!-- POP UP MESSAGGIO POST LOGIN O LOGOUT -->
     <div id="log-pop-ok" class="log-pop">

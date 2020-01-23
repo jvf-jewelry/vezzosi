@@ -32,6 +32,11 @@
       "phonegap-plugin-push": {
         "ANDROID_SUPPORT_V13_VERSION": "27.+",
         "FCM_VERSION": "17.0.+"
+      },
+      "cordova-plugin-x-socialsharing": {
+        "ANDROID_SUPPORT_V4_VERSION": "24.1.1+",
+        "PHOTO_LIBRARY_ADD_USAGE_DESCRIPTION": "This app requires photo library access to function properly.",
+        "PHOTO_LIBRARY_USAGE_DESCRIPTION": "This app requires photo library access to function properly."
       }
     },
     "platforms": [
@@ -42,7 +47,9 @@
   "dependencies": {
     "cordova-android": "^8.1.0",
     "cordova-ios": "^5.1.1",
+    "cordova-plugin-x-socialsharing": "5.6.3",
     "cordova-support-google-services": "1.2.1",
+    "es6-promise-plugin": "4.2.2",
     "phonegap-plugin-multidex": "^1.0.0"
   }
 }
