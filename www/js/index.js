@@ -2261,6 +2261,7 @@ app.viewHandler = function(ctl,$route,$timeout){
       case 'partials/login.html':
         ctl.current_view = 'login';
         console.log("LOGIN");
+        $("#nav-header").hide();
         ctl.apply();
         ctl.hideNavbar();
         break;
@@ -2358,6 +2359,63 @@ app.viewHandler = function(ctl,$route,$timeout){
   };
 }
 ;
+app.logins = function(ctl,$http){
+  
+  ctl.loginWithFacebook = function(){
+    facebookConnectPlugin.login(["email"],
+    function success(response){
+      if(response.status=="connected"){
+        console.log("risposta facebook: ",response);
+        //console.log("facebook header ", ctl.generateHeader());
+        //TODO: cambiare con api da chiamare al server di Genux
+        /*$http(
+          {
+            url: "/app/login",
+            method: "GET",
+            params: {
+              fbToken: response.authResponse.accessToken,
+              platform: ctl.platform
+            },
+            headers: ctl.generateHeader()
+          }
+          ).then(
+          function(fbresponse){
+            ctl.loginCallback(fbresponse,buy_params);
+          },
+          function(error){
+            console.log(error);
+          }
+        );*/
+      }else{
+        console.log("errore login con facebook!");
+        console.log(response);
+        ctl.spinnerHide();
+      }
+    }, 
+    function error(error){
+      console.log("error fbplugin: ",error);
+      //se da errore 4201 vuol dire che c'è stato un errore in aspettato
+      if(error.errorCode == 4201){
+        ctl.spinnerHide();
+        return;
+      }
+      ctl.spinnerHide();
+    });
+  }
+
+  ctl.loginWithGoogle = function(){}
+
+  ctl.loginWithEmail    = function(email,pass){}
+
+
+
+  ctl.loginCallback = function(response){
+    console.log(response);
+    
+    ctl.apply();
+  };
+}
+;
 //$scope,e,$rootScope,$http,t,$location,$timeout,$translate,$localStorage,NgMap
 app.controller("JvfController", function($scope, $route, $rootScope, $http, $cookies, $location, $timeout, $interval, $translate, $localStorage, $location, $q) {
   var ctl = this;
@@ -2376,6 +2434,8 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
   app.helpers(ctl,$timeout,$location);
   //chiamo il modulo per gestire le viste
   app.viewHandler(ctl,$route,$timeout);
+  //chiamo il modulo per effettuare il login
+  app.logins(ctl,$http);
 
   ctl.apply = function(){
     setTimeout(function(){ $scope.$apply();}, 50);
@@ -2497,13 +2557,35 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
 
   //condivisione attraverso lo share center di ios e android
   ctl.share = function(message, subject, image, link){
+    var options = {
+      message: message, // not supported on some apps (Facebook, Instagram)
+      subject: subject, // fi. for email
+      files: new Array(image), // an array of filenames either locally or remotely
+      url: link,
+      chooserTitle: 'Share with ...', // Android only, you can override the default share sheet title
+      iPadCoordinates: '0,0,0,0' //IOS only iPadCoordinates for where the popover should be point.  Format with x,y,width,height
+    };
     console.log('Share =>', message, subject, image, link);
+    /*if(window.plugins)
+      window.plugins.socialsharing.share(message, subject, image, link);*/
     if(window.plugins)
-      window.plugins.socialsharing.share(message, subject, image, link);
+      window.plugins.socialsharing.shareWithOptions(options, ctl.onShareSuccess, ctl.onShareFailure);
+  }
+
+  ctl.onShareSuccess = function(result) {
+    ctl.spinnerHide();
+    console.log("Share completed? " + result.completed); // On Android apps mostly return false even while it's true
+    console.log("Shared to app: " + result.app); // On Android result.app since plugin version 5.4.0 this is no longer empty. On iOS it's empty when sharing is cancelled (result.completed=false)
+  };
+
+  ctl.onShareFailure = function(result){
+    ctl.spinnerHide();
+    console.log("Sharing failed with message: ", result);
   }
 
   //wrapper per le variabili dei post
   ctl.share_post = function(post){
+    ctl.spinnerShow();
     var url = 'https://www.jewelryvirtualfair.com/it/post-page/?idp='+post.id;
     var message = 'View ' + ctl.space.info.nome_page + ' posts';
     var image = post.immagine_1;
@@ -2512,6 +2594,7 @@ app.controller("JvfController", function($scope, $route, $rootScope, $http, $coo
 
   //wrapper per le variabili dei prodotti
   ctl.share_product = function(product){
+    ctl.spinnerShow();
     var nome_prodotto = product.nome_prodotto;
     nome_prodotto = nome_prodotto.
       toLowerCase().
@@ -2960,6 +3043,7 @@ app.config(function($translateProvider) {
 
 // 
 // ANGULAR
+
 
 
 
